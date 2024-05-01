@@ -3,10 +3,12 @@ use bevy::prelude::*;
 mod input;
 mod player;
 mod platform;
+mod printers;
 
 use input::*;
 use player::*;
-use platform::new_platform_bundle;
+use platform::*;
+use printers::*;
 
 fn main() {
     App::new()
@@ -16,6 +18,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Update, get_input)
         .add_systems(Update, player_movement)
+        .add_systems(Update, debug_draw_bounds)
         .run();
 }
 
@@ -30,13 +33,14 @@ fn setup(
     commands.spawn(new_platform_bundle(
         &mut meshes,
         &mut materials,
-        Vec2::new(0.0, 0.0),
-    ));
+        Vec2::new(0.0, -100.0),
+        Vec2::new(100.0, 10.0),
+    )).insert(Collider);
 
     //sprite bundle
     commands.spawn(new_player_bundle(
         asset_server,
         Vec2::new(0.0, 1.0),
-        Vec2::new(0.5, 0.5),
+        Vec2::new(20.0, 20.0),
     )).insert(PlayerTransform::default());
 }
